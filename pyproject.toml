@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pdf-tools"
+version = "0.1.0"
+description = "Command-line PDF utilities"
+requires-python = ">=3.8"
+dependencies = [
+    "pillow",
+    "PyPDF2"
+]
+
+[project.scripts]
+pdf-create  = "pdf_tools.pdf_create:main"
+pdf-decrypt = "pdf_tools.pdf_decrypt:main"
+pdf-encrypt = "pdf_tools.pdf_encrypt:main"
+pdf-extract = "pdf_tools.pdf_extract:main"
+pdf-merge   = "pdf_tools.pdf_merge:main"
+pdf-rotate  = "pdf_tools.pdf_rotate:main"
+pdf-select  = "pdf_tools.pdf_select:main"
