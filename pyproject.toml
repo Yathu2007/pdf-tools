@@ -6,10 +6,24 @@ build-backend = "setuptools.build_meta"
 name = "pdf-tools"
 version = "0.1.0"
 description = "Command-line PDF utilities"
+readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
     "pillow",
     "PyPDF2"
+]
+license = { file = "LICENSE" }
+authors = [
+    { name = "Yathurshan Manoharan" }
+]
+keywords = ["pdf", "cli", "utilities", "merge", "encrypt", "decrypt", "rotate", "extract"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Utilities"
 ]
 
 [project.scripts]
