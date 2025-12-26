@@ -1,5 +1,3 @@
-# This application is meant to encrypt pdfs
-
 from PyPDF2 import PdfWriter, PdfReader
 import argparse
 import os
@@ -7,36 +5,48 @@ import os
 
 class EncryptPDF:
     def __init__(self, input_path, output, password):
-        self.file = PdfReader(input_path)
-        self.pdf_writer = PdfWriter()
+        self.input_path = input_path
+        self.output = output
+        self.password = password
 
-        if self.file.is_encrypted:
+    def encrypt(self):
+        file = PdfReader(self.input_path)
+        pdf_writer = PdfWriter()
+
+        if file.is_encrypted:
+            print("[*] File is already encrypted.")
             return
 
-        for page in self.file.pages:
-            self.pdf_writer.add_page(page)
+        for page in file.pages:
+            pdf_writer.add_page(page)
 
-        self.pdf_writer.encrypt(password)
+        pdf_writer.encrypt(self.password)
 
-        with open(f"{output}.pdf", "wb") as f:
-            self.pdf_writer.write(f)
+        with open(f"{self.output}.pdf", "wb") as f:
+            pdf_writer.write(f)
 
-    @classmethod
-    def from_argv(cls):
-        parser = argparse.ArgumentParser()
-        parser.add_argument("-i", "--input", dest="input_path", required=True)
-        parser.add_argument("-o", "--output", dest="output", required=True)
-        parser.add_argument("-p", "--password", dest="password", required=True)
 
-        args = parser.parse_args()
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--input", dest="input_path", required=True)
+    parser.add_argument("-o", "--output", dest="output", required=True)
+    parser.add_argument("-p", "--password", dest="password", required=True)
 
-        input_path = os.path.expanduser(args.input_path)
+    args = parser.parse_args()
 
-        if not (os.path.exists(input_path)):
-            parser.error("[-] Input file does not exist.")
+    input_path = os.path.expanduser(args.input_path)
 
-        return cls(input_path, args.output, args.password)
+    if not (os.path.exists(input_path)):
+        parser.error("[-] Input file does not exist.")
+
+    return (input_path, args.output, args.password)
+
+
+def main():
+    args = parse_args()
+    pdf = EncryptPDF(*args)
+    pdf.encrypt()
 
 
 if __name__ == "__main__":
-    pdf_decrypter = EncryptPDF.from_argv()
+    main()

@@ -1,20 +1,23 @@
-# This application is meant to select pages from a pdf
-
 from PyPDF2 import PdfReader, PdfWriter
 import argparse
 
 
 class SelectPDFPages:
     def __init__(self, input_filename, page_range, output_filename):
-        self.pdf_reader = PdfReader(input_filename)
-        self.pdf_writer = PdfWriter()
-        self.page_nums = self.get_page_nums(page_range)
+        self.input_filename = input_filename
+        self.page_range = page_range
+        self.output_filename = output_filename
 
-        for page_num in self.page_nums:
-            self.pdf_writer.add_page(self.pdf_reader.pages[page_num])
+    def select(self):
+        pdf_reader = PdfReader(self.input_filename)
+        pdf_writer = PdfWriter()
+        page_nums = self.get_page_nums(self.page_range)
 
-        with open(f"{output_filename}.pdf", "wb") as self.out:
-            self.pdf_writer.write(self.out)
+        for page_num in page_nums:
+            pdf_writer.add_page(pdf_reader.pages[page_num])
+
+        with open(f"{self.output_filename}.pdf", "wb") as out:
+            pdf_writer.write(out)
 
     def get_page_nums(self, page_range: str):
         """
@@ -33,36 +36,42 @@ class SelectPDFPages:
 
         return nums
 
-    @classmethod
-    def from_argv(cls):
-        parser = argparse.ArgumentParser()
-        parser.add_argument(
-            "--input",
-            "-i",
-            action="store",
-            dest="input_filename",
-            required=True,
-        )
-        parser.add_argument(
-            "--pages",
-            "-p",
-            action="store",
-            dest="pages",
-            required=True,
-            help="As a range, comma separated page numbers, or single page number",
-        )
-        parser.add_argument(
-            "--output",
-            "-o",
-            action="store",
-            dest="output_filename",
-            default="output",
-        )
 
-        args = parser.parse_args()
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--input",
+        "-i",
+        action="store",
+        dest="input_filename",
+        required=True,
+    )
+    parser.add_argument(
+        "--pages",
+        "-p",
+        action="store",
+        dest="pages",
+        required=True,
+        help="As a range, comma separated page numbers, or single page number",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        action="store",
+        dest="output_filename",
+        default="output",
+    )
 
-        return cls(args.input_filename, args.pages, args.output_filename)
+    args = parser.parse_args()
+
+    return args
+
+
+def main():
+    args = parse_args()
+    pdf = SelectPDFPages(*args)
+    pdf.select()
 
 
 if __name__ == "__main__":
-    pdf_extracter = SelectPDFPages.from_argv()
+    main()
